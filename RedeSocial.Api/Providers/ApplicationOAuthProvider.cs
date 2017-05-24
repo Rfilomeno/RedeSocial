@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using RedeSocial.Api.Models;
+using System.Security.Claims;
 
 namespace RedeSocial.Api.Providers
 {
@@ -19,25 +20,26 @@ namespace RedeSocial.Api.Providers
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
+
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
             var user = await userManager.FindAsync(context.UserName, context.Password);
 
-            if (user != null)
+            if (user == null)
             {
-                var oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, OAuthDefaults.AuthenticationType);
+                context.SetError("invalid_grant", "The userName or password is incorrect");
+                
+            }
+            ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, OAuthDefaults.AuthenticationType);
+
+                //var oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, OAuthDefaults.AuthenticationType);
 
                 AuthenticationProperties properties = CreateProperties(user);
 
                 var ticket = new AuthenticationTicket(oAuthIdentity, properties);
 
                 context.Validated(ticket);
-            }
-            else
-            {
-                context.SetError("invalid_grant", "The userName or password is incorrect");
-
-            }
+            
 
         }
 

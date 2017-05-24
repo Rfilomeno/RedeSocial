@@ -21,7 +21,7 @@ namespace RedeSocial.Web.Controllers
         {
             _client = new HttpClient();
             
-            _client.BaseAddress = new Uri("https://localhost:44346/");
+            _client.BaseAddress = new Uri("https://localhost:44358/");
             _client.DefaultRequestHeaders.Accept.Clear();
 
             var mediaType = new MediaTypeWithQualityHeaderValue("application/json");
@@ -47,6 +47,7 @@ namespace RedeSocial.Web.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     // To do
+                    
                 }
                 else
                 {
@@ -98,6 +99,7 @@ namespace RedeSocial.Web.Controllers
                 using(var requestContent = new FormUrlEncodedContent(data))
                 {
                     var response = await _client.PostAsync("/Token", requestContent);
+
                     if (response.IsSuccessStatusCode)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();

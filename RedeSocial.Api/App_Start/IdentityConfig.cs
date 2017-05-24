@@ -17,7 +17,7 @@ namespace RedeSocial.Api
         {
             var dbContext = context.Get<ApplicationDbContext>();
             var userStore = new UserStore<ApplicationUser>(dbContext);
-            var manager = new ApplicationUserManager(userStore);
+            var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
 
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
